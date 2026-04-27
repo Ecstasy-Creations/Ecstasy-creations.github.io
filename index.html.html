@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Ecstasy | Audio & 3D Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #050305;
+            --deep: #0d080d;
+            --crimson: #8b0000;
+            --red: #c0001a;
+            --bright-red: #ff0033;
+            --rose: #ff4466;
+            --magenta: #cc0055;
+            --white: #f5f0f5;
+            --fog: rgba(245,240,245,0.6);
+            --mist: rgba(245,240,245,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom cursor */
+        .cursor {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: var(--bright-red);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255,0,51,0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease, width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+        }
+        body:hover .cursor { opacity: 1; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: var(--crimson); }
+
+        /* Noise overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 9997;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 28px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mix-blend-mode: normal;
+        }
+        nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(192,0,26,0.3), transparent);
+        }
+        .logo {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+        .logo span { color: var(--bright-red); }
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: rgba(245,240,245,0.4);
+            text-decoration: none;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: color 0.5s ease;
+            position: relative;
+        }
+        .nav-links a:hover { color: var(--rose); }
+
+        /* HERO */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background — concentric ripples */
+        .hero-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+
+        /* Vertical drip lines */
+        .drip-lines {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 100%;
+            pointer-events: none;
+        }
+        .drip-line {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                rgba(192,0,26,0.05) 10%,
+                rgba(255,0,51,0.2) 40%,
+                rgba(255,68,102,0.4) 55%,
+                rgba(255,0,51,0.1) 70%,
+                transparent 100%
+            );
+            animation: dripPulse var(--dur, 4s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s);
+        }
+        @keyframes dripPulse {
+            0%, 100% { opacity: 0.3; transform: scaleY(1); }
+            50% { opacity: 1; transform: scaleY(1.02); }
+        }
+
+        /* Orb */
+        .orb {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%,
+                rgba(255,100,100,0.3) 0%,
+                rgba(192,0,26,0.6) 30%,
+                rgba(100,0,20,0.9) 60%,
+                rgba(5,3,5,1) 100%
+            );
+            box-shadow:
+                0 0 60px rgba(255,0,51,0.3),
+                0 0 120px rgba(192,0,26,0.15),
+                inset 0 0 40px rgba(255,100,100,0.1);
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 0 60px rgba(255,0,51,0.3), 0 0 120px rgba(192,0,26,0.15); }
+            50% { transform: translateY(-20px) scale(1.03); box-shadow: 0 0 100px rgba(255,0,51,0.5), 0 0 200px rgba(192,0,26,0.2); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4rem, 12vw, 9rem);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 0.9;
+            letter-spacing: -2px;
+            color: var(--white);
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .hero h1 .red-word { color: var(--bright-red); font-style: normal; font-weight: 600; }
+
+        .hero-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 8px;
+            color: rgba(245,240,245,0.35);
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            animation: fadeUp 2s ease forwards;
+            animation-delay: 0.8s;
+            opacity: 0;
+        }
+
+        .hero-desc {
+            max-width: 480px;
+            font-size: 1.25rem;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.8;
+            color: rgba(245,240,245,0.5);
+            margin-bottom: 50px;
+            animation: fadeUp 2s ease forwards;
+            animation-delay: 1.2s;
+            opacity: 0;
+        }
+
+        .hero-cta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            color: var(--bright-red);
+            text-decoration: none;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,0,51,0.3);
+            padding-bottom: 4px;
+            transition: all 0.5s ease;
+            animation: fadeUp 2s ease forwards;
+            animation-delay: 1.5s;
+            opacity: 0;
+        }
+        .hero-cta:hover {
+            color: var(--rose);
+            border-bottom-color: var(--rose);
+            letter-spacing: 8px;
+        }
+
+        /* Scroll hint */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.3;
+            animation: scrollFade 3s ease-in-out infinite;
+        }
+        .scroll-hint span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            letter-spacing: 4px;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+        .scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(180deg, var(--bright-red), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+        @keyframes scrollLine { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+        @keyframes scrollFade { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.6; } }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 120px 60px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 6px;
+            color: var(--bright-red);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 60px;
+        }
+
+        /* Divider */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(192,0,26,0.4), rgba(255,0,51,0.2), transparent);
+            margin: 0;
+        }
+
+        /* ABOUT */
+        .about-section {
+            background: linear-gradient(180deg, var(--black) 0%, var(--deep) 100%);
+        }
+        .about-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: start;
+            max-width: 1200px;
+        }
+        .about-text p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            line-height: 2;
+            color: rgba(245,240,245,0.6);
+            margin-bottom: 24px;
+        }
+        .about-text p em {
+            color: var(--rose);
+            font-style: italic;
+        }
+
+        /* Rotating ring visual */
+        .about-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            position: relative;
+        }
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid;
+        }
+        .ring-1 { width: 280px; height: 280px; border-color: rgba(192,0,26,0.3); animation: spin 20s linear infinite; }
+        .ring-2 { width: 220px; height: 220px; border-color: rgba(255,0,51,0.2); animation: spin 15s linear infinite reverse; }
+        .ring-3 { width: 160px; height: 160px; border-color: rgba(255,68,102,0.3); animation: spin 10s linear infinite; }
+        .ring-dot {
+            position: absolute;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--bright-red);
+            box-shadow: 0 0 10px var(--bright-red);
+        }
+        .ring-1 .ring-dot { top: -3px; left: 50%; transform: translateX(-50%); }
+        .ring-2 .ring-dot { top: -3px; left: 50%; transform: translateX(-50%); }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .ring-center {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(192,0,26,0.6), rgba(5,3,5,1));
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.8rem;
+            color: var(--white);
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 40px rgba(192,0,26,0.4);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 40px;
+        }
+        .skill-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: rgba(245,240,245,0.5);
+            border: 1px solid rgba(192,0,26,0.3);
+            padding: 8px 18px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            cursor: default;
+        }
+        .skill-tag:hover {
+            color: var(--rose);
+            border-color: var(--rose);
+            background: rgba(255,0,51,0.05);
+        }
+
+        /* GALLERY */
+        .modeling-section { background: var(--black); }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            background: var(--deep);
+            cursor: none;
+        }
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                transparent 40%,
+                rgba(5,3,5,0.95) 100%
+            );
+            z-index: 1;
+            transition: opacity 0.6s ease;
+        }
+        .gallery-item:hover::before { opacity: 0.5; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; transform: translateY(0); }
+
+        .gallery-media-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--deep), var(--crimson) 200%);
+            transition: transform 0.8s ease;
+        }
+        .gallery-item:hover .gallery-media-placeholder { transform: scale(1.05); }
+
+        .placeholder-icon {
+            font-size: 3rem;
+            opacity: 0.2;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 30px 24px;
+            z-index: 2;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+        .gallery-overlay h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .gallery-overlay p {
+            font-size: 0.85rem;
+            color: rgba(245,240,245,0.4);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .gallery-tag-sm {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            letter-spacing: 3px;
+            color: var(--bright-red);
+            text-transform: uppercase;
+        }
+
+        /* Wide item */
+        .gallery-item.wide {
+            grid-column: span 2;
+            aspect-ratio: auto;
+        }
+
+        /* AUDIO */
+        .audio-section {
+            background: linear-gradient(180deg, var(--deep) 0%, var(--black) 100%);
+        }
+        .audio-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 60px;
+            border-bottom: 1px solid rgba(192,0,26,0.2);
+        }
+        .tab-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            color: rgba(245,240,245,0.3);
+            background: transparent;
+            border: none;
+            padding: 16px 32px;
+            cursor: none;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.4s ease;
+        }
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0;
+            width: 0; height: 1px;
+            background: var(--bright-red);
+            transition: width 0.4s ease;
+        }
+        .tab-btn.active { color: var(--white); }
+        .tab-btn.active::after, .tab-btn:hover::after { width: 100%; }
+        .tab-btn:hover { color: rgba(245,240,245,0.7); }
+
+        .audio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2px;
+        }
+        .audio-card {
+            background: var(--deep);
+            padding: 32px;
+            border-left: 1px solid rgba(192,0,26,0.15);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .audio-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(192,0,26,0.05) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .audio-card:hover::before { opacity: 1; }
+        .audio-card:hover { border-left-color: var(--bright-red); }
+
+        .audio-visualizer {
+            height: 48px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+        .bar {
+            flex: 1;
+            background: var(--crimson);
+            border-radius: 1px;
+            transition: height 0.3s ease;
+            opacity: 0.5;
+        }
+        .audio-card.playing .bar {
+            animation: waveBar 0.6s ease-in-out infinite alternate;
+            opacity: 1;
+            background: var(--bright-red);
+        }
+        .audio-card.playing .bar:nth-child(2n) { animation-delay: 0.1s; }
+        .audio-card.playing .bar:nth-child(3n) { animation-delay: 0.2s; }
+        .audio-card.playing .bar:nth-child(4n) { animation-delay: 0.15s; }
+        @keyframes waveBar {
+            from { transform: scaleY(0.3); }
+            to { transform: scaleY(1); }
+        }
+
+        .audio-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .audio-card p {
+            font-size: 0.85rem;
+            color: rgba(245,240,245,0.35);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .play-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,0,51,0.5);
+            background: transparent;
+            color: var(--bright-red);
+            font-size: 0.8rem;
+            cursor: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+            flex-shrink: 0;
+        }
+        .play-btn:hover {
+            background: rgba(255,0,51,0.1);
+            border-color: var(--rose);
+            box-shadow: 0 0 20px rgba(255,0,51,0.2);
+        }
+        .progress-bar {
+            flex: 1;
+            height: 1px;
+            background: rgba(245,240,245,0.1);
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--bright-red);
+            width: 0%;
+            transition: width 0.1s linear;
+            position: relative;
+        }
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -3px; top: -3px;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--bright-red);
+        }
+        .time {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: rgba(245,240,245,0.3);
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 80px 60px;
+            text-align: center;
+            position: relative;
+            background: var(--deep);
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(192,0,26,0.4), transparent);
+        }
+        .footer-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 300;
+            font-style: italic;
+            color: rgba(245,240,245,0.08);
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .social-links a {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 4px;
+            color: rgba(245,240,245,0.3);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.4s ease;
+        }
+        .social-links a:hover { color: var(--rose); }
+        .copyright {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.5rem;
+            letter-spacing: 3px;
+            color: rgba(245,240,245,0.15);
+        }
+
+        /* Edit mode */
+        .edit-toggle {
+            position: fixed;
+            top: 28px;
+            right: 60px;
+            z-index: 9999;
+            background: transparent;
+            border: 1px solid rgba(255,0,51,0.4);
+            color: rgba(255,0,51,0.7);
+            padding: 8px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            cursor: none;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            display: none;
+        }
+        .edit-toggle:hover { border-color: var(--bright-red); color: var(--bright-red); background: rgba(255,0,51,0.05); }
+        .edit-toggle.active { border-color: #00ff88; color: #00ff88; }
+
+        .export-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            background: transparent;
+            border: 1px solid rgba(0,255,136,0.4);
+            color: rgba(0,255,136,0.7);
+            padding: 12px 24px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            cursor: none;
+            text-transform: uppercase;
+            display: none;
+            transition: all 0.4s ease;
+        }
+        .export-btn:hover { border-color: #00ff88; color: #00ff88; }
+        body.edit-mode .export-btn { display: block; }
+
+        body.edit-mode .editable {
+            outline: 1px dashed rgba(255,0,51,0.4);
+            cursor: text;
+        }
+        body.edit-mode .editable:hover { background: rgba(255,0,51,0.05); }
+        body.edit-mode .deletable .delete-btn { display: flex; }
+        body.edit-mode .add-item-btn { display: flex !important; }
+
+        .delete-btn {
+            display: none;
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 24px; height: 24px;
+            background: var(--crimson);
+            color: var(--white);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+        }
+        .delete-btn:hover { background: var(--bright-red); }
+
+        .add-item-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            border: 1px dashed rgba(192,0,26,0.3);
+            color: rgba(192,0,26,0.5);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            background: transparent;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .add-item-btn:hover { border-color: var(--bright-red); color: var(--bright-red); }
+
+        /* Auth */
+        .auth-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(5,3,5,0.97);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-overlay.active { display: flex; }
+        .auth-box {
+            border: 1px solid rgba(192,0,26,0.3);
+            padding: 60px;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+        }
+        .auth-box h3 {
+            font-family: 'Syncopate', sans-serif;
+            color: var(--white);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+        }
+        .auth-box p {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: rgba(245,240,245,0.3);
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            background: transparent;
+            border: 1px solid rgba(192,0,26,0.3);
+            color: var(--white);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+        .auth-box input:focus { outline: none; border-color: var(--bright-red); }
+        .auth-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--bright-red);
+            border: 1px solid rgba(255,0,51,0.4);
+            background: transparent;
+            padding: 12px 28px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            margin: 4px;
+        }
+        .auth-btn:hover { background: rgba(255,0,51,0.1); }
+        .auth-error { color: var(--bright-red); font-size: 0.6rem; font-family: 'Space Mono', monospace; margin-top: 12px; letter-spacing: 2px; display: none; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5,3,5,0.95);
+            z-index: 2000;
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            border: 1px solid rgba(192,0,26,0.3);
+            padding: 50px;
+            max-width: 480px;
+            width: 90%;
+            position: relative;
+            background: var(--deep);
+        }
+        .modal h3 {
+            font-family: 'Syncopate', sans-serif;
+            color: var(--white);
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+        }
+        .modal-input {
+            width: 100%; padding: 12px 16px; margin-bottom: 12px;
+            background: transparent;
+            border: 1px solid rgba(192,0,26,0.2);
+            color: var(--white);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+        }
+        .modal-input:focus { outline: none; border-color: var(--bright-red); }
+        .modal-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: var(--bright-red);
+            border: 1px solid rgba(255,0,51,0.4);
+            background: transparent;
+            padding: 10px 24px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-right: 8px; margin-top: 8px;
+            transition: all 0.4s ease;
+        }
+        .modal-btn:hover { background: rgba(255,0,51,0.1); }
+        .modal-close {
+            position: absolute; top: 20px; right: 24px;
+            color: rgba(245,240,245,0.3); font-size: 1.2rem;
+            cursor: pointer; background: none; border: none;
+        }
+        .file-input-label {
+            display: block; padding: 16px;
+            border: 1px dashed rgba(192,0,26,0.3);
+            color: rgba(192,0,26,0.5);
+            text-align: center; cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 12px;
+            transition: all 0.4s ease;
+        }
+        .file-input-label:hover { border-color: var(--bright-red); color: var(--bright-red); }
+        input[type="file"] { display: none; }
+        .file-name { color: rgba(245,240,245,0.3); font-size: 0.55rem; margin-top: 6px; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 80px; right: 30px;
+            border: 1px solid rgba(192,0,26,0.4);
+            color: var(--white); background: var(--deep);
+            padding: 14px 24px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem; letter-spacing: 3px;
+            z-index: 10000;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+        }
+        .toast.show { transform: translateX(0); }
+
+        /* Ambient glow layers */
+        .glow-layer {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(80px);
+            opacity: 0.04;
+        }
+        .glow-1 {
+            width: 600px; height: 600px;
+            background: var(--crimson);
+            top: -200px; left: -200px;
+            animation: glowDrift1 20s ease-in-out infinite;
+        }
+        .glow-2 {
+            width: 400px; height: 400px;
+            background: var(--magenta);
+            bottom: -100px; right: -100px;
+            animation: glowDrift2 25s ease-in-out infinite;
+        }
+        @keyframes glowDrift1 {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(100px, 200px); }
+            66% { transform: translate(-50px, 100px); }
+        }
+        @keyframes glowDrift2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-150px, -100px); }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 20px 24px; }
+            .nav-links { display: none; }
+            section { padding: 80px 24px; }
+            .about-layout { grid-template-columns: 1fr; gap: 50px; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item.wide { grid-column: span 1; }
+            .audio-grid { grid-template-columns: 1fr; }
+            .edit-toggle { top: 20px; right: 24px; }
+            .hero h1 { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <div class="glow-layer glow-1"></div>
+    <div class="glow-layer glow-2"></div>
+
+    <!-- Auth -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-box">
+            <h3>Authorization</h3>
+            <p>Enter password to access edit mode</p>
+            <input type="password" id="authPassword" placeholder="· · · · · · · ·" onkeydown="if(event.key==='Enter')checkPassword()">
+            <div>
+                <button class="auth-btn" onclick="checkPassword()">Unlock</button>
+                <button class="auth-btn" onclick="closeAuth()">Cancel</button>
+            </div>
+            <div class="auth-error" id="authError">incorrect password</div>
+        </div>
+    </div>
+
+    <button class="edit-toggle" id="editToggle" onclick="requestEditMode()">✎ Edit</button>
+    <button class="export-btn" onclick="exportSite()">↓ Export</button>
+
+    <!-- Nav -->
+    <nav>
+        <div class="logo editable" data-field="logo">RED <span>ECSTASY</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#modeling">Work</a></li>
+            <li><a href="#audio">Audio</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="home" style="opacity:1;transform:none;">
+        <canvas class="hero-canvas" id="heroCanvas"></canvas>
+
+        <!-- Drip lines -->
+        <div class="drip-lines">
+            <div class="drip-line" style="left:5%;--dur:4s;--delay:0s;"></div>
+            <div class="drip-line" style="left:12%;--dur:5s;--delay:0.3s;"></div>
+            <div class="drip-line" style="left:20%;--dur:3.5s;--delay:0.8s;"></div>
+            <div class="drip-line" style="left:30%;--dur:4.5s;--delay:0.2s;"></div>
+            <div class="drip-line" style="left:40%;--dur:3s;--delay:1s;"></div>
+            <div class="drip-line" style="left:50%;--dur:6s;--delay:0s;"></div>
+            <div class="drip-line" style="left:60%;--dur:3.5s;--delay:0.5s;"></div>
+            <div class="drip-line" style="left:70%;--dur:4s;--delay:0.7s;"></div>
+            <div class="drip-line" style="left:80%;--dur:5s;--delay:0.1s;"></div>
+            <div class="drip-line" style="left:88%;--dur:3.8s;--delay:0.9s;"></div>
+            <div class="drip-line" style="left:95%;--dur:4.2s;--delay:0.4s;"></div>
+        </div>
+
+        <div class="orb"></div>
+
+        <div class="hero-content">
+            <p class="hero-eyebrow editable" data-field="heroEyebrow">Audio Engineer · 3D Artist · Sound Designer</p>
+            <h1 class="editable" data-field="heroTitle">
+                Red<br><span class="red-word">Ecstasy</span>
+            </h1>
+            <p class="hero-desc editable" data-field="heroDesc">
+                Work that doesn't just reach you —<br>it becomes the air around you.
+            </p>
+            <a href="#modeling" class="hero-cta editable" data-field="heroCta">Enter the work</a>
+        </div>
+
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- About -->
+    <section class="about-section" id="about">
+        <p class="section-label">001 — Identity</p>
+        <div class="about-layout">
+            <div class="about-text">
+                <h2 class="section-title editable" data-field="aboutTitle">Who<br><em>I am</em></h2>
+                <p class="editable" data-field="aboutP1">
+                    I'm Red Ecstasy — a multidisciplinary creative living in the space between <em>sound and image</em>. The work I make doesn't perform for you. It pulls you in.
+                </p>
+                <p class="editable" data-field="aboutP2">
+                    Whether it's a sound effect that hits before your brain catches up, a track that rewires the room, or a 3D world that feels too real to be rendered — I build things that <em>stick to you</em>.
+                </p>
+                <div class="skills-list">
+                    <span class="skill-tag editable deletable" data-field="skill">Audio SFX<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <span class="skill-tag editable deletable" data-field="skill">Music Composition<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <span class="skill-tag editable deletable" data-field="skill">3D Modeling<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <span class="skill-tag editable deletable" data-field="skill">Sound Design<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <span class="skill-tag editable deletable" data-field="skill">Blender<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <span class="skill-tag editable deletable" data-field="skill">Unreal Engine<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <span class="skill-tag editable deletable" data-field="skill">FL Studio<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <span class="skill-tag editable deletable" data-field="skill">Pro Tools<button class="delete-btn" onclick="deleteItem(this)">×</button></span>
+                    <button class="skill-tag" onclick="addSkill()" style="display:none;border-style:dashed;" id="addSkillBtn">+ Add</button>
+                </div>
+            </div>
+            <div class="about-visual">
+                <div class="ring ring-1"><div class="ring-dot"></div></div>
+                <div class="ring ring-2"><div class="ring-dot"></div></div>
+                <div class="ring ring-3"></div>
+                <div class="ring-center editable" data-field="visualText">RE</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 3D Modeling -->
+    <section class="modeling-section" id="modeling">
+        <p class="section-label">002 — 3D Work</p>
+        <h2 class="section-title editable" data-field="modelTitle">Sculpted<br><em>realities</em></h2>
+        <div class="gallery-grid" id="modelGallery">
+            <div class="gallery-item wide deletable" style="position:relative;">
+                <button class="delete-btn" onclick="deleteItem(this)">×</button>
+                <div class="gallery-media-placeholder editable-media" onclick="changeMedia(this)" style="background:linear-gradient(135deg,#0d080d,#3a0010);">
+                    <span class="placeholder-icon">◈</span>
+                </div>
+                <div class="gallery-overlay">
+                    <h3 class="editable" data-field="itemTitle">Cyberpunk Character</h3>
+                    <p class="editable" data-field="itemDesc">Detailed character model with cybernetic enhancements and dynamic rigging.</p>
+                    <span class="gallery-tag-sm editable" data-field="itemTag">Character Design</span>
+                </div>
+            </div>
+            <div class="gallery-item deletable" style="position:relative;">
+                <button class="delete-btn" onclick="deleteItem(this)">×</button>
+                <div class="gallery-media-placeholder editable-media" onclick="changeMedia(this)" style="background:linear-gradient(135deg,#0d080d,#2a0030);">
+                    <span class="placeholder-icon">◉</span>
+                </div>
+                <div class="gallery-overlay">
+                    <h3 class="editable" data-field="itemTitle">Neon City Environment</h3>
+                    <p class="editable" data-field="itemDesc">Futuristic cityscape with volumetric lighting and atmospheric effects.</p>
+                    <span class="gallery-tag-sm editable" data-field="itemTag">Environment</span>
+                </div>
+            </div>
+            <div class="gallery-item deletable" style="position:relative;">
+                <button class="delete-btn" onclick="deleteItem(this)">×</button>
+                <div class="gallery-media-placeholder editable-media" onclick="changeMedia(this)" style="background:linear-gradient(135deg,#0d080d,#200010);">
+                    <span class="placeholder-icon">◆</span>
+                </div>
+                <div class="gallery-overlay">
+                    <h3 class="editable" data-field="itemTitle">Weapon Prop Collection</h3>
+                    <p class="editable" data-field="itemDesc">High-fidelity weapon models with PBR materials and detailed textures.</p>
+                    <span class="gallery-tag-sm editable" data-field="itemTag">Props</span>
+                </div>
+            </div>
+            <button class="add-item-btn" onclick="openModal('model')">
+                <span>+</span><span>Add Model</span>
+            </button>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Audio -->
+    <section class="audio-section" id="audio">
+        <p class="section-label">003 — Audio</p>
+        <h2 class="section-title editable" data-field="audioTitle">Sonic<br><em>landscapes</em></h2>
+        <div class="audio-tabs">
+            <button class="tab-btn active" onclick="switchTab('music', event)">Music</button>
+            <button class="tab-btn" onclick="switchTab('sfx', event)">SFX</button>
+        </div>
+        <div id="musicPanel" class="audio-grid">
+            <div class="audio-card deletable">
+                <button class="delete-btn" onclick="deleteItem(this)">×</button>
+                <div class="audio-visualizer">
+                    <div class="bar" style="height:20%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:30%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:30%"></div><div class="bar" style="height:50%"></div>
+                </div>
+                <h3 class="editable" data-field="audioName">Neon Nights</h3>
+                <p class="editable" data-field="audioDesc">Synthwave composition with driving bass and atmospheric pads.</p>
+                <div class="audio-controls">
+                    <button class="play-btn" onclick="togglePlay(this)">▶</button>
+                    <div class="progress-bar" onclick="seek(event, this)"><div class="progress-fill"></div></div>
+                    <span class="time editable" data-field="audioTime">3:45</span>
+                </div>
+            </div>
+            <div class="audio-card deletable">
+                <button class="delete-btn" onclick="deleteItem(this)">×</button>
+                <div class="audio-visualizer">
+                    <div class="bar" style="height:30%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:30%"></div>
+                </div>
+                <h3 class="editable" data-field="audioName">Dark Matter</h3>
+                <p class="editable" data-field="audioDesc">Orchestral hybrid track with industrial elements and cinematic scope.</p>
+                <div class="audio-controls">
+                    <button class="play-btn" onclick="togglePlay(this)">▶</button>
+                    <div class="progress-bar" onclick="seek(event, this)"><div class="progress-fill"></div></div>
+                    <span class="time editable" data-field="audioTime">4:20</span>
+                </div>
+            </div>
+            <button class="add-item-btn" onclick="openModal('music')">
+                <span>+</span><span>Add Track</span>
+            </button>
+        </div>
+        <div id="sfxPanel" class="audio-grid" style="display:none;">
+            <div class="audio-card deletable">
+                <button class="delete-btn" onclick="deleteItem(this)">×</button>
+                <div class="audio-visualizer">
+                    <div class="bar" style="height:80%"></div><div class="bar" style="height:30%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:30%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:40%"></div>
+                </div>
+                <h3 class="editable" data-field="audioName">Cyber Impact</h3>
+                <p class="editable" data-field="audioDesc">Heavy mechanical impact sound with metallic resonance and sub-bass.</p>
+                <div class="audio-controls">
+                    <button class="play-btn" onclick="togglePlay(this)">▶</button>
+                    <div class="progress-bar" onclick="seek(event, this)"><div class="progress-fill"></div></div>
+                    <span class="time editable" data-field="audioTime">0:05</span>
+                </div>
+            </div>
+            <div class="audio-card deletable">
+                <button class="delete-btn" onclick="deleteItem(this)">×</button>
+                <div class="audio-visualizer">
+                    <div class="bar" style="height:40%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:30%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:60%"></div>
+                </div>
+                <h3 class="editable" data-field="audioName">Plasma Charge</h3>
+                <p class="editable" data-field="audioDesc">Energy weapon charging sequence with electrical crackle and power build-up.</p>
+                <div class="audio-controls">
+                    <button class="play-btn" onclick="togglePlay(this)">▶</button>
+                    <div class="progress-bar" onclick="seek(event, this)"><div class="progress-fill"></div></div>
+                    <span class="time editable" data-field="audioTime">0:08</span>
+                </div>
+            </div>
+            <button class="add-item-btn" onclick="openModal('sfx')">
+                <span>+</span><span>Add SFX</span>
+            </button>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-title editable" data-field="footerLogo">Red Ecstasy</div>
+        <div class="social-links">
+            <a href="#" class="editable" data-field="social">Twitter</a>
+            <a href="#" class="editable" data-field="social">Instagram</a>
+            <a href="#" class="editable" data-field="social">YouTube</a>
+            <a href="#" class="editable" data-field="social">ArtStation</a>
+            <a href="#" class="editable" data-field="social">SoundCloud</a>
+        </div>
+        <p class="copyright editable" data-field="copyright">© 2026 Red Ecstasy — Audio & 3D Portfolio</p>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <h3 id="modalTitle">Add Item</h3>
+            <input type="text" class="modal-input" id="itemTitle" placeholder="Title">
+            <input type="text" class="modal-input" id="itemDesc" placeholder="Description">
+
+            <!-- URL input -->
+            <input type="text" class="modal-input" id="itemUrl" placeholder="Paste YouTube / SoundCloud / image URL" oninput="handleUrlInput(this)">
+            <div id="urlHint" style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:2px;color:rgba(192,0,26,0.7);margin-bottom:10px;min-height:16px;"></div>
+
+            <!-- OR divider -->
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="flex:1;height:1px;background:rgba(192,0,26,0.15);"></div>
+                <span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:3px;color:rgba(245,240,245,0.2);">OR UPLOAD</span>
+                <div style="flex:1;height:1px;background:rgba(192,0,26,0.15);"></div>
+            </div>
+
+            <label class="file-input-label" for="itemFile">
+                Upload File
+                <div class="file-name" id="fileName">No file selected</div>
+            </label>
+            <input type="file" id="itemFile" accept="video/*,audio/*,image/*" onchange="handleFileSelect(this)">
+            <input type="text" class="modal-input" id="itemTag" placeholder="Category tag">
+            <button class="modal-btn" onclick="addItem()">Add</button>
+            <button class="modal-btn" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+    <div class="modal-overlay" id="mediaModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeMediaModal()">×</button>
+            <h3>Change Media</h3>
+
+            <input type="text" class="modal-input" id="mediaUrl" placeholder="Paste YouTube / SoundCloud / image URL" oninput="handleMediaUrlInput(this)">
+            <div id="mediaUrlHint" style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:2px;color:rgba(192,0,26,0.7);margin-bottom:10px;min-height:16px;"></div>
+
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="flex:1;height:1px;background:rgba(192,0,26,0.15);"></div>
+                <span style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:3px;color:rgba(245,240,245,0.2);">OR UPLOAD</span>
+                <div style="flex:1;height:1px;background:rgba(192,0,26,0.15);"></div>
+            </div>
+
+            <label class="file-input-label" for="mediaFile">
+                Upload New Media
+                <div class="file-name" id="mediaFileName">No file selected</div>
+            </label>
+            <input type="file" id="mediaFile" accept="video/*,audio/*,image/*" onchange="handleMediaFileSelect(this)">
+            <button class="modal-btn" onclick="confirmMediaChange()">Update</button>
+            <button class="modal-btn" onclick="closeMediaModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorRing = document.getElementById('cursorRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cursor.style.left = mx + 'px';
+            cursor.style.top = my + 'px';
+        });
+        function animateCursor() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) *.12;
+            cursorRing.style.left = rx + 'px';
+            cursorRing.style.top = ry + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+        document.querySelectorAll('a, button, .editable, .play-btn, .tab-btn').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '20px'; cursor.style.height = '20px';
+                cursorRing.style.width = '60px'; cursorRing.style.height = '60px';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '12px'; cursor.style.height = '12px';
+                cursorRing.style.width = '40px'; cursorRing.style.height = '40px';
+            });
+        });
+
+        // Hero canvas — ripple rings
+        const canvas = document.getElementById('heroCanvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        let rings = [];
+        function spawnRing() {
+            rings.push({ r: 0, maxR: Math.random() * 300 + 100, alpha: 0.15, speed: Math.random() * 0.5 + 0.3 });
+            setTimeout(spawnRing, Math.random() * 2000 + 800);
+        }
+        spawnRing();
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cx = canvas.width / 2, cy = canvas.height / 2;
+            rings = rings.filter(r => r.alpha > 0.001);
+            rings.forEach(ring => {
+                ctx.beginPath();
+                ctx.arc(cx, cy, ring.r, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(192,0,26,${ring.alpha})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ring.r += ring.speed;
+                ring.alpha *= 0.985;
+            });
+            requestAnimationFrame(drawCanvas);
+        }
+        drawCanvas();
+
+        // Scroll reveal
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('section:not(.hero)').forEach(s => observer.observe(s));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Edit mode
+        const PASS = "redev2026";
+        let isEditMode = false, isAuthenticated = false, currentMediaElement = null;
+        let uploadedFiles = {}, currentModalType = '', selectedFile = null;
+        let currentPlaying = null, progressInterval = null;
+
+        function requestEditMode() {
+            if (isAuthenticated) toggleEditMode();
+            else {
+                document.getElementById('authOverlay').classList.add('active');
+                document.getElementById('authPassword').focus();
+                document.getElementById('authError').style.display = 'none';
+            }
+        }
+        function checkPassword() {
+            if (document.getElementById('authPassword').value === PASS) {
+                isAuthenticated = true; closeAuth(); toggleEditMode();
+                showToast('Edit mode unlocked');
+            } else {
+                document.getElementById('authError').style.display = 'block';
+                document.getElementById('authPassword').value = '';
+            }
+        }
+        function closeAuth() { document.getElementById('authOverlay').classList.remove('active'); }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            document.body.classList.toggle('edit-mode', isEditMode);
+            const btn = document.getElementById('editToggle');
+            if (isEditMode) {
+                btn.textContent = '✓ Done'; btn.classList.add('active'); enableEditing();
+            } else {
+                btn.textContent = '✎ Edit'; btn.classList.remove('active'); disableEditing();
+                showToast('Viewing live site');
+            }
+        }
+        function enableEditing() {
+            document.querySelectorAll('.editable').forEach(el => {
+                el.contentEditable = true;
+                el.addEventListener('blur', saveEdit);
+                el.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); } });
+            });
+            document.getElementById('addSkillBtn').style.display = 'inline-block';
+        }
+        function disableEditing() {
+            document.querySelectorAll('.editable').forEach(el => { el.contentEditable = false; el.removeEventListener('blur', saveEdit); });
+            document.getElementById('addSkillBtn').style.display = 'none';
+        }
+        function saveEdit(e) {
+            const el = e.target; const field = el.dataset.field;
+            if (field) localStorage.setItem('re_' + field + '_' + Array.from(document.querySelectorAll('[data-field="' + field + '"]')).indexOf(el), el.innerText);
+        }
+        function deleteItem(btn) {
+            if (!isEditMode) return;
+            const item = btn.closest('.gallery-item, .audio-card, .skill-tag');
+            if (item && confirm('Delete?')) { item.remove(); showToast('Deleted'); }
+        }
+        function addSkill() {
+            const name = prompt('Skill name:');
+            if (name) {
+                const btn = document.getElementById('addSkillBtn');
+                const tag = document.createElement('span');
+                tag.className = 'skill-tag editable deletable';
+                tag.dataset.field = 'skill';
+                tag.contentEditable = true;
+                tag.innerHTML = name + '<button class="delete-btn" onclick="deleteItem(this)">×</button>';
+                btn.parentNode.insertBefore(tag, btn);
+                showToast('Skill added');
+            }
+        }
+        // URL detection helpers
+        function detectUrlType(url) {
+            if (!url) return null;
+            if (/youtube\.com\/watch|youtu\.be\//.test(url)) return 'youtube';
+            if (/youtube\.com\/shorts\//.test(url)) return 'youtube-short';
+            if (/soundcloud\.com\//.test(url)) return 'soundcloud';
+            if (/\.(mp3|wav|ogg|flac|aac)(\?|$)/i.test(url)) return 'audio';
+            if (/\.(mp4|webm|mov)(\?|$)/i.test(url)) return 'video';
+            if (/\.(jpg|jpeg|png|webp|gif|avif)(\?|$)/i.test(url)) return 'image';
+            return 'unknown';
+        }
+
+        function getYouTubeId(url) {
+            const m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            return m ? m[1] : null;
+        }
+
+        function buildMediaHtml(url, file) {
+            if (url) {
+                const type = detectUrlType(url);
+                if (type === 'youtube' || type === 'youtube-short') {
+                    const id = getYouTubeId(url);
+                    if (id) return '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=0&rel=0" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>';
+                }
+                if (type === 'soundcloud') {
+                    return '<iframe src="https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) + '&color=%23ff0033&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false" style="width:100%;height:100%;border:none;min-height:120px;"></iframe>';
+                }
+                if (type === 'image') return '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;">';
+                if (type === 'video') return '<video src="' + url + '" style="width:100%;height:100%;object-fit:cover;" autoplay muted loop playsinline></video>';
+                if (type === 'audio') return '<audio src="' + url + '" data-direct-audio="true" style="display:none;"></audio>';
+            }
+            if (file) {
+                const blobUrl = URL.createObjectURL(file);
+                if (file.type.startsWith('video/')) return '<video src="' + blobUrl + '" style="width:100%;height:100%;object-fit:cover;" autoplay muted loop playsinline></video>';
+                if (file.type.startsWith('image/')) return '<img src="' + blobUrl + '" style="width:100%;height:100%;object-fit:cover;">';
+                if (file.type.startsWith('audio/')) return '<audio src="' + blobUrl + '" data-direct-audio="true" style="display:none;"></audio>';
+            }
+            return '<span class="placeholder-icon">◈</span>';
+        }
+
+        function buildAudioSrcHtml(url, file) {
+            // For audio cards — returns src string or iframe for SC
+            if (url) {
+                const type = detectUrlType(url);
+                if (type === 'soundcloud') return { type: 'soundcloud', html: '<iframe src="https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) + '&color=%23ff0033&auto_play=false&hide_related=true&show_comments=false" style="width:100%;border:none;height:120px;margin-bottom:12px;"></iframe>', src: null };
+                if (type === 'youtube' || type === 'youtube-short') { const id = getYouTubeId(url); return { type: 'youtube', html: '<iframe src="https://www.youtube.com/embed/' + id + '" style="width:100%;height:120px;border:none;margin-bottom:12px;" allowfullscreen></iframe>', src: null }; }
+                if (type === 'audio') return { type: 'audio', html: null, src: url };
+            }
+            if (file && file.type.startsWith('audio/')) return { type: 'audio', html: null, src: URL.createObjectURL(file) };
+            return { type: 'none', html: null, src: null };
+        }
+
+        function hintForUrl(url) {
+            const type = detectUrlType(url);
+            const hints = {
+                youtube: '▶ YouTube video detected — will embed player',
+                'youtube-short': '▶ YouTube Short detected — will embed player',
+                soundcloud: '☁ SoundCloud track detected — will embed player',
+                audio: '♪ Direct audio file — will use built-in player',
+                video: '◉ Direct video file — will autoplay',
+                image: '◈ Image URL detected',
+                unknown: '? Unrecognised URL — try a direct file link',
+            };
+            return hints[type] || '';
+        }
+
+        function handleUrlInput(input) {
+            document.getElementById('urlHint').textContent = input.value ? hintForUrl(input.value) : '';
+        }
+        function handleMediaUrlInput(input) {
+            document.getElementById('mediaUrlHint').textContent = input.value ? hintForUrl(input.value) : '';
+        }
+
+        function changeMedia(el) { if (!isEditMode) return; currentMediaElement = el; document.getElementById('mediaUrl').value = ''; document.getElementById('mediaUrlHint').textContent = ''; document.getElementById('mediaModal').classList.add('active'); }
+        function closeMediaModal() { document.getElementById('mediaModal').classList.remove('active'); currentMediaElement = null; document.getElementById('mediaFile').value = ''; document.getElementById('mediaFileName').textContent = 'No file selected'; document.getElementById('mediaUrl').value = ''; document.getElementById('mediaUrlHint').textContent = ''; }
+        function handleMediaFileSelect(input) { if (input.files[0]) document.getElementById('mediaFileName').textContent = input.files[0].name; }
+        function confirmMediaChange() {
+            const url = document.getElementById('mediaUrl').value.trim();
+            const file = document.getElementById('mediaFile').files[0];
+            if ((url || file) && currentMediaElement) {
+                currentMediaElement.innerHTML = buildMediaHtml(url, file);
+                showToast('Media updated');
+            }
+            closeMediaModal();
+        }
+
+        function openModal(type) {
+            if (!isEditMode) { showToast('Enable edit mode first'); return; }
+            currentModalType = type;
+            const titles = { model: 'Add 3D Model', music: 'Add Music Track', sfx: 'Add SFX' };
+            document.getElementById('modalTitle').textContent = titles[type];
+            document.getElementById('itemUrl').value = '';
+            document.getElementById('urlHint').textContent = '';
+            document.getElementById('modal').classList.add('active');
+        }
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            ['itemTitle','itemDesc','itemTag','itemUrl'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('itemFile').value = '';
+            document.getElementById('fileName').textContent = 'No file selected';
+            document.getElementById('urlHint').textContent = '';
+            selectedFile = null;
+        }
+        function handleFileSelect(input) { if (input.files[0]) { selectedFile = input.files[0]; document.getElementById('fileName').textContent = selectedFile.name; } }
+
+        function addItem() {
+            const title = document.getElementById('itemTitle').value.trim();
+            const desc = document.getElementById('itemDesc').value.trim();
+            const tag = document.getElementById('itemTag').value.trim();
+            const url = document.getElementById('itemUrl').value.trim();
+            if (!title || !desc) { alert('Fill in title and description'); return; }
+
+            if (currentModalType === 'model') {
+                const mediaHtml = buildMediaHtml(url, selectedFile);
+                const gallery = document.getElementById('modelGallery');
+                const addBtn = gallery.querySelector('.add-item-btn');
+                const el = document.createElement('div');
+                el.className = 'gallery-item deletable';
+                el.style.position = 'relative';
+                el.innerHTML = '<button class="delete-btn" onclick="deleteItem(this)">×</button><div class="gallery-media-placeholder editable-media" onclick="changeMedia(this)">' + mediaHtml + '</div><div class="gallery-overlay"><h3 class="editable" data-field="itemTitle">' + title + '</h3><p class="editable" data-field="itemDesc">' + desc + '</p><span class="gallery-tag-sm editable" data-field="itemTag">' + (tag || '3D') + '</span></div>';
+                gallery.insertBefore(el, addBtn);
+            } else {
+                const audio = buildAudioSrcHtml(url, selectedFile);
+                const panel = document.getElementById(currentModalType === 'music' ? 'musicPanel' : 'sfxPanel');
+                const addBtn = panel.querySelector('.add-item-btn');
+                const el = document.createElement('div');
+                el.className = 'audio-card deletable';
+                let bars = Array.from({length:12}, () => '<div class="bar" style="height:' + Math.round(Math.random()*80+20) + '%"></div>').join('');
+                let embedHtml = audio.html ? audio.html : '';
+                let audioTag = audio.src ? '<audio data-direct-audio="true" src="' + audio.src + '" style="display:none;"></audio>' : '';
+                el.innerHTML = '<button class="delete-btn" onclick="deleteItem(this)">×</button>' + embedHtml + (audio.type === 'none' || audio.html ? '' : '') + '<div class="audio-visualizer">' + bars + '</div>' + audioTag + '<h3 class="editable" data-field="audioName">' + title + '</h3><p class="editable" data-field="audioDesc">' + desc + '</p><div class="audio-controls"><button class="play-btn" onclick="togglePlay(this)">▶</button><div class="progress-bar" onclick="seek(event,this)"><div class="progress-fill"></div></div><span class="time editable" data-field="audioTime">0:00</span></div>';
+                panel.insertBefore(el, addBtn);
+            }
+            if (isEditMode) { setTimeout(() => document.querySelectorAll('.editable').forEach(el => { el.contentEditable = true; el.addEventListener('blur', saveEdit); }), 100); }
+            closeModal(); showToast('Item added');
+        }
+
+        function exportSite() {
+            const clone = document.documentElement.cloneNode(true);
+            clone.querySelector('body').classList.remove('edit-mode');
+            ['editToggle','exportBtn','toast','modal','mediaModal','authOverlay'].forEach(id => { const el = clone.querySelector('#' + id); if (el) el.remove(); });
+            clone.querySelectorAll('.delete-btn, .add-item-btn, #addSkillBtn').forEach(el => el.remove());
+            clone.querySelectorAll('.editable').forEach(el => { el.removeAttribute('contenteditable'); el.classList.remove('editable'); });
+            clone.querySelectorAll('.editable-media').forEach(el => { el.removeAttribute('onclick'); el.classList.remove('editable-media'); });
+            clone.querySelectorAll('.deletable').forEach(el => el.classList.remove('deletable'));
+            const blob = new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], {type: 'text/html'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'red_ecstasy_portfolio.html';
+            a.click();
+            showToast('Exported — check downloads');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // Audio — real playback when src available
+        let currentAudio = null;
+
+        function stopCurrent() {
+            if (currentPlaying) {
+                currentPlaying.classList.remove('playing');
+                const pb = currentPlaying.querySelector('.play-btn');
+                if (pb) pb.textContent = '▶';
+                clearInterval(progressInterval);
+            }
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            currentPlaying = null;
+        }
+
+        function togglePlay(btn) {
+            const card = btn.closest('.audio-card');
+            const isPlaying = card.classList.contains('playing');
+
+            if (currentPlaying && currentPlaying !== card) stopCurrent();
+            if (isPlaying) { stopCurrent(); return; }
+
+            card.classList.add('playing'); btn.textContent = '⏸'; currentPlaying = card;
+            const fill = card.querySelector('.progress-fill');
+            const audioEl = card.querySelector('audio[data-direct-audio]');
+
+            if (audioEl) {
+                // Real audio playback
+                currentAudio = audioEl;
+                audioEl.currentTime = parseFloat(fill.style.width || '0') / 100 * (audioEl.duration || 0);
+                audioEl.play().catch(() => {});
+                progressInterval = setInterval(() => {
+                    if (!audioEl.duration) return;
+                    const pct = (audioEl.currentTime / audioEl.duration) * 100;
+                    fill.style.width = pct + '%';
+                    const rem = Math.floor(audioEl.duration - audioEl.currentTime);
+                    const m = Math.floor(rem / 60), s = rem % 60;
+                    const timeEl = card.querySelector('.time');
+                    if (timeEl) timeEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+                    if (audioEl.ended) { stopCurrent(); fill.style.width = '0%'; }
+                }, 200);
+                audioEl.onended = () => { stopCurrent(); fill.style.width = '0%'; };
+            } else {
+                // Simulated playback for embedded players / no audio
+                let w = parseFloat(fill.style.width) || 0;
+                progressInterval = setInterval(() => {
+                    w += 0.3; if (w >= 100) { w = 0; stopCurrent(); }
+                    fill.style.width = w + '%';
+                }, 100);
+            }
+        }
+        function seek(e, bar) {
+            const rect = bar.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width;
+            bar.querySelector('.progress-fill').style.width = (pct * 100) + '%';
+            const card = bar.closest('.audio-card');
+            const audioEl = card ? card.querySelector('audio[data-direct-audio]') : null;
+            if (audioEl && audioEl.duration) audioEl.currentTime = pct * audioEl.duration;
+        }
+        function switchTab(tab, e) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            document.getElementById('musicPanel').style.display = tab === 'music' ? 'grid' : 'none';
+            document.getElementById('sfxPanel').style.display = tab === 'sfx' ? 'grid' : 'none';
+        }
+
+        // Click outside modals
+        document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal(); });
+        document.getElementById('mediaModal').addEventListener('click', e => { if (e.target === document.getElementById('mediaModal')) closeMediaModal(); });
+        document.getElementById('authOverlay').addEventListener('click', e => { if (e.target === document.getElementById('authOverlay')) closeAuth(); });
+
+        // Restore saved edits
+        window.addEventListener('load', () => {
+            document.querySelectorAll('[data-field]').forEach((el, i) => {
+                const saved = localStorage.getItem('re_' + el.dataset.field + '_' + i);
+                if (saved) el.innerText = saved;
+            });
+            document.getElementById('editToggle').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
