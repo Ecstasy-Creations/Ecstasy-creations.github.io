@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Red Ecstasy | Roblox SFX & 3D Modeling Commissions</title>
+  <meta name="description" content="Red Ecstasy portfolio for Roblox sound design, music loops, visual effects, and 3D modeling commissions.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Back to top">
+      <span class="brand-mark">RE</span>
+      <span>
+        <strong>Red Ecstasy</strong>
+        <small>Roblox audio and 3D commissions</small>
+      </span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#audio">Audio</a>
+      <a href="#models">Models</a>
+      <a href="#process">Process</a>
+      <a class="nav-cta" href="#contact">Book</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow" data-copy="hero-eyebrow">Red-lit sound design, music, and game-ready 3D</p>
+        <h1 data-copy="hero-title">Send your Roblox game to Cloud 9.</h1>
+        <p class="hero-text" data-copy="hero-text">Red Ecstasy creates euphoric SFX, hypnotic music loops, and surreal 3D assets for worlds that should feel haunted, polished, and impossible to forget.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#audio" data-copy="hero-primary">Play Samples</a>
+          <a class="button secondary" href="#models" data-copy="hero-secondary">Enter the Gallery</a>
+        </div>
+      </div>
+      <div class="hero-panel" aria-label="Portfolio highlights">
+        <div class="ecstasy-window" aria-hidden="true">
+          <span class="eclipse"></span>
+          <span class="road"></span>
+          <span class="wave one"></span>
+          <span class="wave two"></span>
+          <span class="wave three"></span>
+        </div>
+        <div class="signal-card">
+          <span>Audio</span>
+          <strong id="audioCount">0</strong>
+          <small>playable previews</small>
+        </div>
+        <div class="signal-card">
+          <span>3D</span>
+          <strong id="modelCount">0</strong>
+          <small>showcase pieces</small>
+        </div>
+        <div class="signal-card wide">
+          <span>Status</span>
+          <strong>Open</strong>
+          <small>for Roblox commissions</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="audio">
+      <div class="section-heading">
+        <p class="eyebrow" data-copy="audio-eyebrow">Playable highs</p>
+        <h2 data-copy="audio-title">SFX and Music</h2>
+        <div class="filters" id="audioFilters" aria-label="Audio filters"></div>
+      </div>
+      <div class="audio-grid" id="audioGrid"></div>
+    </section>
+
+    <section class="section muted" id="models">
+      <div class="section-heading">
+        <p class="eyebrow" data-copy="models-eyebrow">Visual limbo</p>
+        <h2 data-copy="models-title">3D Models</h2>
+        <div class="filters" id="modelFilters" aria-label="Model filters"></div>
+      </div>
+      <div class="model-grid" id="modelGrid"></div>
+    </section>
+
+    <section class="process" id="process">
+      <div>
+        <p class="eyebrow" data-copy="process-eyebrow">Commission ritual</p>
+        <h2 data-copy="process-title">From reference to unreal atmosphere.</h2>
+      </div>
+      <ol>
+        <li data-step="1"><strong>Send the vision.</strong><span>Share your game genre, mood references, asset count, and deadline.</span></li>
+        <li data-step="2"><strong>Lock the scope.</strong><span>You receive pricing, turnaround, revision details, and delivery format.</span></li>
+        <li data-step="3"><strong>Enter preview mode.</strong><span>Listen, rotate, watch, and request changes before final delivery.</span></li>
+      </ol>
+    </section>
+
+    <section class="contact" id="contact">
+      <div>
+        <p class="eyebrow" data-copy="contact-eyebrow">Open portal</p>
+        <h2 data-copy="contact-title">Commission Red Ecstasy</h2>
+        <p data-copy="contact-text">Replace these buttons with your Discord, Roblox Talent Hub, email, or order form links.</p>
+      </div>
+      <div class="contact-actions">
+        <a class="button primary" id="discordLink" href="#">Discord</a>
+        <a class="button secondary" id="emailLink" href="#">Email</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="footerName">Red Ecstasy</span>
+    <span data-copy="footer-note">Audio previews are streamed for portfolio review. Final files are delivered after commission terms are met.</span>
+  </footer>
+
+  <script src="portfolio-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
