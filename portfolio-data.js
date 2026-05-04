@@ -2,8 +2,8 @@ window.portfolioData = {
   siteName: "Red Ecstasy",
   pageTitle: "Red Ecstasy | Roblox SFX & 3D Modeling Commissions",
   pageDescription: "Red Ecstasy portfolio for Roblox sound design, music loops, visual effects, and 3D modeling commissions.",
-  discordUrl: "https://discord.com/users/your-user-id",
-  email: "you@example.com",
+  discordUrl: "https://discord.com/users/1468345062424449097,"
+  email: "@example.com",
   copy: {
     brandSubline: "Roblox audio and 3D commissions",
     navAudio: "Audio",
@@ -11,8 +11,8 @@ window.portfolioData = {
     navProcess: "Process",
     navContact: "Book",
     heroEyebrow: "Red-lit sound design, music, and game-ready 3D",
-    heroTitle: "Send your Roblox game to Cloud 9.",
-    heroText: "Red Ecstasy creates euphoric SFX, hypnotic music loops, and surreal 3D assets for worlds that should feel haunted, polished, and impossible to forget.",
+    heroTitle: "elevating your Roblox game to Cloud 9.",
+    heroText: "I create satisfying SFX, engaging music, and 3D assets for games that feel polished, and impossible to forget.",
     heroPrimaryButton: "Play Samples",
     heroSecondaryButton: "Enter the Gallery",
     audioEyebrow: "Playable highs",
@@ -24,20 +24,20 @@ window.portfolioData = {
     processSteps: [
       {
         title: "Send the vision.",
-        text: "Share your game genre, mood references, asset count, and deadline."
+        text: "Share your game genre, mood references, asset count, etc. and Ill handle the rest."
       },
       {
-        title: "Lock the scope.",
-        text: "You receive pricing, turnaround, revision details, and delivery format."
+        title: "Locking in the details.",
+        text: "I will tell you my pricing, turnaround, revision details, and delivery format."
       },
       {
-        title: "Enter preview mode.",
-        text: "Listen, rotate, watch, and request changes before final delivery."
+        title: "finishing touches.",
+        text: "Listen, watch, and request changes before final delivery."
       }
     ],
     contactEyebrow: "Open portal",
     contactTitle: "Commission Red Ecstasy",
-    contactText: "Replace these buttons with your Discord, Roblox Talent Hub, email, or order form links.",
+    contactText: "Links to my discord and email! hmu.",
     discordButton: "Discord",
     emailButton: "Email",
     footerNote: "Audio previews are streamed for portfolio review. Final files are delivered after commission terms are met."
